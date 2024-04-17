@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habittracker/database/habit_database.dart';
-import 'package:habittracker/models/habit.dart';
 import 'package:habittracker/pages/home_page.dart';
-import 'package:habittracker/theme/light_mode.dart';
 import 'package:habittracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,11 +14,7 @@ void main() async {
       ChangeNotifierProvider(create: (context) => HabitDatabase()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
     ],
-    child: MyApp(),
-
-    // ChangeNotifierProvider(
-    // create: (context) => ThemeProvider(),
-    // child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
