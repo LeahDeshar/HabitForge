@@ -8,7 +8,7 @@ import 'database/habit_database.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HabitDatabase.initialize();
-  // await HabitDatabase().saveFirstLaunchDate();
+  await HabitDatabase().saveFirstLaunchDate();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => HabitDatabase()),

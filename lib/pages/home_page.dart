@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:habittracker/components/my_drawer.dart';
-// import 'package:habittracker/database/habit_database.dart';
-// import 'package:habittracker/models/habit.dart';
-// import 'package:habittracker/utli/habit_util.dart';
-// import 'package:provider/provider.dart';
+import 'package:habittracker/components/my_habit_tile.dart';
+import 'package:habittracker/database/habit_database.dart';
+import 'package:habittracker/models/habit.dart';
+import 'package:habittracker/utli/habit_util.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,11 +14,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // @override
-  // void initState() {
-  //   Provider.of<HabitDatabase>(context, listen: false).readHabit();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    Provider.of<HabitDatabase>(context, listen: false).readHabit();
+    super.initState();
+  }
+
+  void createHabitOnOff(bool? value, Habit habit) {
+    if (value != null) {}
+  }
 
   final TextEditingController textController = TextEditingController();
   void createNewHabit() {
@@ -33,9 +38,9 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 MaterialButton(
                   onPressed: () {
-                    // String newHabitName = textController.text;
-                    // context.read<HabitDatabase>().addHabit(newHabitName);
-                    // Navigator.pop(context);
+                    String newHabitName = textController.text;
+                    context.read<HabitDatabase>().addHabit(newHabitName);
+                    Navigator.pop(context);
                     textController.clear();
                   },
                   child: const Text('Save'),
@@ -66,22 +71,23 @@ class _HomePageState extends State<HomePage> {
           color: Colors.black,
         ),
       ),
-      // body: _buildHabitList(),
+      body: _buildHabitList(),
     );
   }
 
-  // Widget _buildHabitList() {
-  //   final habitDatbase = context.watch<HabitDatabase>();
-  //   List<Habit> currentHabits = habitDatbase.currentHabits;
-  //   return ListView.builder(
-  //     itemCount: currentHabits.length,
-  //     itemBuilder: (context, index) {
-  //       final habit = currentHabits[index];
-  //       bool isCompletedToday = isHabitCompletedToday(habit.completedDays);
-  //       return ListTile(
-  //         title: Text(habit.name),
-  //       );
-  //     },
-  //   );
-  // }
+  Widget _buildHabitList() {
+    final habitDatbase = context.watch<HabitDatabase>();
+    List<Habit> currentHabits = habitDatbase.currentHabits;
+    return ListView.builder(
+      itemCount: currentHabits.length,
+      itemBuilder: (context, index) {
+        final habit = currentHabits[index];
+        bool isCompletedToday = isHabitCompletedToday(habit.completedDays);
+        return MyHabitTile(
+            text: habit.name,
+            isCompleted: isCompletedToday,
+            onChanged: (value) => checkHabitOnOff(value));
+      },
+    );
+  }
 }
