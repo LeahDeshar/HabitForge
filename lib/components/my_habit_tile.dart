@@ -1,51 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class MyHabitTile extends StatelessWidget {
-  final bool isCompleted;
-  final void Function(bool?) onChanged;
-  final void Function(BuildContext) editHabit;
-
+class MyHabitTile extends StatefulWidget {
   final String text;
+  final bool isCompleted;
+  final void Function(bool?)? onChanged;
+  final void Function(BuildContext)? editHabit;
+  final void Function(BuildContext)? deleteHabit;
+
   const MyHabitTile(
       {super.key,
       required this.isCompleted,
       required this.text,
       required this.onChanged,
+      required this.deleteHabit,
       required this.editHabit});
 
   @override
+  State<MyHabitTile> createState() => _MyHabitTileState();
+}
+
+class _MyHabitTileState extends State<MyHabitTile> {
+  bool _isCompleted = false;
+
+  @override
+  void initState() {
+    _isCompleted = widget.isCompleted;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Slidable(
-      endActionPane: ActionPane(motion: const StretchMotion(), children: [
-        SlidableAction(
-          onPressed: () => {editHabit},
-          icon: Icons.delete,
-          color: Colors.red,
-          label: 'Delete',
-        ),
-      ]),
-      child: GestureDetector(
-        onTap: () => {
-          if (onChanged != null) {onChanged(!isCompleted)}
-        },
-        child: Container(
-            decoration: BoxDecoration(
-              color: isCompleted
-                  ? Colors.green
-                  : Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
-            child: ListTile(
-              title: Text(text),
-              leading: Checkbox(
-                activeColor: Colors.green,
-                value: isCompleted,
-                onChanged: onChanged,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+      child: Slidable(
+        endActionPane: ActionPane(motion: const StretchMotion(), children: [
+          SlidableAction(
+            backgroundColor: Colors.grey.shade900,
+            onPressed: widget.editHabit,
+            icon: Icons.settings,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          SlidableAction(
+            backgroundColor: Colors.red,
+            onPressed: widget.deleteHabit,
+            icon: Icons.delete,
+            borderRadius: BorderRadius.circular(8),
+          )
+        ]),
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              _isCompleted = !_isCompleted;
+            });
+            widget.onChanged?.call(_isCompleted);
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                color: _isCompleted
+                    ? Colors.green
+                    : Theme.of(context).colorScheme.secondary,
+                borderRadius: BorderRadius.circular(8),
               ),
-            )),
+              padding: EdgeInsets.all(12),
+              child: ListTile(
+                  title: Text(widget.text,
+                      style: TextStyle(
+                          color: widget.isCompleted
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.inversePrimary)),
+                  leading: Checkbox(
+                      activeColor: Colors.green,
+                      value: _isCompleted,
+                      onChanged: widget.onChanged))),
+        ),
       ),
     );
   }
