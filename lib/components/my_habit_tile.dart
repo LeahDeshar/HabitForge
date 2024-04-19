@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class MyHabitTile extends StatefulWidget {
+class MyHabitTile extends StatelessWidget {
   final String text;
   final bool isCompleted;
   final void Function(bool?)? onChanged;
@@ -16,19 +16,7 @@ class MyHabitTile extends StatefulWidget {
       required this.deleteHabit,
       required this.editHabit});
 
-  @override
-  State<MyHabitTile> createState() => _MyHabitTileState();
-}
-
-class _MyHabitTileState extends State<MyHabitTile> {
-  bool _isCompleted = false;
-
-  @override
-  void initState() {
-    _isCompleted = widget.isCompleted;
-    super.initState();
-  }
-
+  // bool _isCompleted = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -37,42 +25,45 @@ class _MyHabitTileState extends State<MyHabitTile> {
         endActionPane: ActionPane(motion: const StretchMotion(), children: [
           SlidableAction(
             backgroundColor: Colors.grey.shade900,
-            onPressed: widget.editHabit,
+            onPressed: editHabit,
             icon: Icons.settings,
             borderRadius: BorderRadius.circular(8),
           ),
           SlidableAction(
             backgroundColor: Colors.red,
-            onPressed: widget.deleteHabit,
+            onPressed: deleteHabit,
             icon: Icons.delete,
             borderRadius: BorderRadius.circular(8),
           )
         ]),
         child: GestureDetector(
           onTap: () {
-            setState(() {
-              _isCompleted = !_isCompleted;
-            });
-            widget.onChanged?.call(_isCompleted);
+            if (onChanged != null) {
+              onChanged!(!isCompleted);
+            }
+            // setState(() {
+            //   _isCompleted = !_isCompleted;
+            // });
+            // widget.onChanged?.call(_isCompleted);
           },
           child: Container(
               decoration: BoxDecoration(
-                color: _isCompleted
+                color: isCompleted
                     ? Colors.green
                     : Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               child: ListTile(
-                  title: Text(widget.text,
+                  title: Text(text,
                       style: TextStyle(
-                          color: widget.isCompleted
+                          color: isCompleted
                               ? Colors.white
                               : Theme.of(context).colorScheme.inversePrimary)),
                   leading: Checkbox(
                       activeColor: Colors.green,
-                      value: _isCompleted,
-                      onChanged: widget.onChanged))),
+                      value: isCompleted,
+                      onChanged: onChanged))),
         ),
       ),
     );
